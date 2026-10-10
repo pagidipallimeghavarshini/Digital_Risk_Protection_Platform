@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scam Message Scanner - Telugu & English Cyber Fraud Detection</title>
+    <meta name="description" content="Detect phishing SMS, WhatsApp scams, and fraud messages in Telugu and English using explainable NLP baseline intelligence.">
+    <!-- Master Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome / Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo" id="msgLogoLink">
+                <div class="brand-icon-shield">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--cyan); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <span class="brand-title">DIGITAL SHIELD</span>
+                    <span class="brand-badge">AI v2.4</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenuList">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="url-scanner.html" class="nav-link"><i class="fa-solid fa-link"></i> URL Scanner</a></li>
+                <li><a href="message-scanner.html" class="nav-link active"><i class="fa-solid fa-comment-sms"></i> Scam Messages</a></li>
+                <li><a href="qr-scanner.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> QR Scanner</a></li>
+                <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> Safety Tips</a></li>
+            </ul>
+
+            <div class="nav-system-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Shield Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-category-tag">
+                <i class="fa-solid fa-language"></i> Multilingual NLP Intelligence
+            </div>
+            <h1 class="page-title">Scam Message & SMS Scanner</h1>
+            <p class="page-subtitle">
+                Inspect WhatsApp, SMS, and email messages in <strong>Telugu (తెలుగు) and English</strong> against electricity bill disconnection fraud, fake bank KYC locks, and lottery lures.
+            </p>
+        </div>
+
+        <!-- Scanner Card -->
+        <div class="cyber-card" style="max-width: 860px; margin: 0 auto;">
+            <!-- Hackathon Sample Test Chips -->
+            <div style="margin-bottom: 1.25rem;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
+                    🎯 Hackathon Quick Demo Samples (Click to load):
+                </span>
+                <div class="sample-presets-bar">
+                    <button class="preset-chip" data-msg="మీ కరెంట్ బిల్లు చెల్లించనందున ఈరోజు రాత్రి విద్యుత్ సరఫరా నిలిపివేయబడుతుంది. వెంటనే ఈ నంబర్‌కు కాల్ చేయండి: 9848022338">
+                        ⚡ Telugu: Electricity Disconnection Scam
+                    </button>
+                    <button class="preset-chip" data-msg="అభినందనలు! మీరు ₹50,000 నగదు బహుమతిని గెలుచుకున్నారు. మీ బ్యాంక్ వివరాలను నమోదు చేయడానికి ఇక్కడ క్లిక్ చేయండి: http://lottery-win.biz">
+                        🎁 Telugu: Cash Prize / Lottery Scam
+                    </button>
+                    <button class="preset-chip" data-msg="మీ ఎస్బీఐ బ్యాంక్ ఖాతా బ్లాక్ చేయబడింది. కేవైసీ అప్‌డేట్ చేయడానికి వెంటనే ఈ లింక్‌ను నొక్కండి: http://sbi-kyc-verify.info">
+                        🏦 Telugu: SBI Account Blocked KYC
+                    </button>
+                    <button class="preset-chip" data-msg="URGENT: Your SBI YONO account has been suspended due to pending PAN KYC. Submit documents now at https://sbi-kyc-reactivate.info">
+                        🚨 English: Urgent SBI KYC Suspension
+                    </button>
+                    <button class="preset-chip" data-msg="Your electricity connection will be disconnected tonight by 9:30 PM. Contact electricity board officer immediately at 9876543210.">
+                        ⚡ English: Electricity Power Cutoff
+                    </button>
+                    <button class="preset-chip" data-msg="హాయ్ రమేష్, ఈరోజు సాయంత్రం 5 గంటలకు కలుద్దామా? ప్రాజెక్ట్ గురించి మాట్లాడాలి.">
+                        ✅ Telugu: Safe Benign Chat
+                    </button>
+                    <button class="preset-chip" data-msg="Hi Ramesh, the project meeting is rescheduled to 4 PM on Google Meet. See you there.">
+                        ✅ English: Safe Business Chat
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <form id="messageScanForm">
+                <!-- Language Selector Bar -->
+                <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);">Target Language:</span>
+                    <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-primary); cursor: pointer;">
+                        <input type="radio" name="langChoice" value="auto" checked> Auto-Detect
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-primary); cursor: pointer;">
+                        <input type="radio" name="langChoice" value="te"> Telugu (తెలుగు)
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--text-primary); cursor: pointer;">
+                        <input type="radio" name="langChoice" value="en"> English
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="messageInput" class="form-label">
+                        <span>Message Content / SMS Body</span>
+                        <span class="form-helper" id="charCounter">0 characters</span>
+                    </label>
+                    <textarea 
+                        id="messageInput" 
+                        class="cyber-textarea" 
+                        placeholder="Paste suspicious SMS, WhatsApp message, or email text here (Telugu or English)..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <button type="button" class="cyber-btn cyber-btn-secondary" id="clearMsgBtn" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-eraser"></i> Clear Text
+                    </button>
+                    <button type="submit" class="cyber-btn" id="msgSubmitBtn" style="min-width: 190px;">
+                        <span id="msgBtnIcon"><i class="fa-solid fa-shield-virus"></i></span>
+                        <span id="msgBtnText">Analyze Scam Intent</span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="msgValidationAlert" style="display: none; padding: 0.75rem 1rem; background: var(--rose-bg); border: 1px solid var(--rose); border-radius: var(--radius-sm); color: var(--rose); font-size: 0.88rem; margin-top: 1rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="msgValidationMsg"></span>
+            </div>
+        </div>
+
+        <!-- Dynamic Result Card -->
+        <div id="msgResultContainer" style="display: none; max-width: 860px; margin: 2rem auto 0;">
+            <!-- Injected via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="margin-bottom: 1rem;">
+                    <div class="brand-icon-shield">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--cyan);"></i>
+                    </div>
+                    <span class="brand-title">DIGITAL SHIELD AI</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                    Specialized NLP scam message analyzer supporting Telugu (తెలుగు) and English regional threat vectors.
+                </p>
+                <div class="footer-helpline-box">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">
+                        🚨 Indian National Cyber Crime Helpline
+                    </span>
+                    <span class="helpline-number">Dial 1930</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Related Scanners</h4>
+                <ul class="footer-links">
+                    <li><a href="url-scanner.html">URL Scanner</a></li>
+                    <li><a href="qr-scanner.html">QR Code Scanner</a></li>
+                    <li><a href="dashboard.html">Threat Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="history.html">Scan History</a></li>
+                    <li><a href="about.html">Safety Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Regional Cyber Defense</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    Electricity disconnection scams and fake courier seizures account for over 45% of reported digital fraud in southern India.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 Digital Shield AI. Multilingual NLP Defense.</div>
+            <div>Dial 1930 for Cyber Crime Assistance</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/message-scanner.js"></script>
+</body>
+</html>

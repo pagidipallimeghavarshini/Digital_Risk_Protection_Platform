@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL & Phishing Scanner - Digital Shield AI</title>
+    <meta name="description" content="Detect malicious phishing websites, brand impersonation, and domain spoofing with AI-driven lexical entropy analysis.">
+    <!-- Master Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome / Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo" id="urlLogoLink">
+                <div class="brand-icon-shield">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--cyan); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <span class="brand-title">DIGITAL SHIELD</span>
+                    <span class="brand-badge">AI v2.4</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenuList">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="url-scanner.html" class="nav-link active"><i class="fa-solid fa-link"></i> URL Scanner</a></li>
+                <li><a href="message-scanner.html" class="nav-link"><i class="fa-solid fa-comment-sms"></i> Scam Messages</a></li>
+                <li><a href="qr-scanner.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> QR Scanner</a></li>
+                <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> Safety Tips</a></li>
+            </ul>
+
+            <div class="nav-system-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Shield Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-category-tag">
+                <i class="fa-solid fa-satellite-dish"></i> Domain & Phishing Defense Vector
+            </div>
+            <h1 class="page-title">AI URL Threat Scanner</h1>
+            <p class="page-subtitle">
+                Inspect suspicious links for brand impersonation, deceptive homographs, high-entropy subdomains, and malicious TLD patterns.
+            </p>
+        </div>
+
+        <!-- Scanner Card -->
+        <div class="cyber-card" style="max-width: 860px; margin: 0 auto;">
+            <!-- Hackathon Sample Test Chips -->
+            <div style="margin-bottom: 1.25rem;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
+                    🎯 Hackathon Quick Demo Samples (Click to autofill):
+                </span>
+                <div class="sample-presets-bar">
+                    <button class="preset-chip" data-sample="https://secure-login-hdfc-kyc.update-account.biz/verify.php">
+                        ⚠️ Bank Phishing (.biz)
+                    </button>
+                    <button class="preset-chip" data-sample="http://paypal-verification-center.secure-account-login.xyz/login">
+                        ⚠️ Brand Spoof (.xyz)
+                    </button>
+                    <button class="preset-chip" data-sample="http://free-iphone16-giveaway.claim-now.xyz/spin">
+                        ⚠️ Fake Giveaway Lure
+                    </button>
+                    <button class="preset-chip" data-sample="https://github.com">
+                        ✅ Legitimate (GitHub)
+                    </button>
+                    <button class="preset-chip" data-sample="https://cybercrime.gov.in">
+                        ✅ Official Gov Portal
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <form id="urlScanForm">
+                <div class="form-group">
+                    <label for="urlInput" class="form-label">
+                        <span>Target Link or Domain Address</span>
+                        <span class="form-helper">Accepts standard URL or hostname</span>
+                    </label>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <input 
+                            type="text" 
+                            id="urlInput" 
+                            class="cyber-input" 
+                            placeholder="e.g., https://secure-login-bank.verify-now.biz" 
+                            required
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="cyber-btn" id="scanSubmitBtn" style="min-width: 170px;">
+                            <span id="btnIcon"><i class="fa-solid fa-radar"></i></span>
+                            <span id="btnText">Scan Website</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="validationAlert" style="display: none; padding: 0.75rem 1rem; background: var(--rose-bg); border: 1px solid var(--rose); border-radius: var(--radius-sm); color: var(--rose); font-size: 0.88rem; margin-top: 1rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="validationMsg"></span>
+            </div>
+        </div>
+
+        <!-- Dynamic Result Card -->
+        <div id="urlResultContainer" style="display: none; max-width: 860px; margin: 2rem auto 0;">
+            <!-- Injected via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="margin-bottom: 1rem;">
+                    <div class="brand-icon-shield">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--cyan);"></i>
+                    </div>
+                    <span class="brand-title">DIGITAL SHIELD AI</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                    Lexical and heuristic URL analyzer powered by Python Flask REST backend.
+                </p>
+                <div class="footer-helpline-box">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">
+                        🚨 Indian National Cyber Crime Helpline
+                    </span>
+                    <span class="helpline-number">Dial 1930</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Related Scanners</h4>
+                <ul class="footer-links">
+                    <li><a href="message-scanner.html">Scam Message Scanner</a></li>
+                    <li><a href="qr-scanner.html">QR Code Scanner</a></li>
+                    <li><a href="dashboard.html">Threat Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="history.html">Scan History</a></li>
+                    <li><a href="about.html">Safety Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Security Guidelines</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    Never submit passwords or sensitive bank tokens on unverified web portals.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 Digital Shield AI. URL & Phishing Threat Defense.</div>
+            <div>Dial 1930 for Cyber Crime Assistance</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/url-scanner.js"></script>
+</body>
+</html>

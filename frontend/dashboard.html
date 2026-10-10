@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard - Digital Shield AI SOC Telemetry</title>
+    <meta name="description" content="Real-time security analytics, vulnerability statistics, and threat telemetry.">
+    <!-- Master Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <!-- Font Awesome / Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo" id="dashLogoLink">
+                <div class="brand-icon-shield">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--cyan); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <span class="brand-title">DIGITAL SHIELD</span>
+                    <span class="brand-badge">AI v2.4</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenuList">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="dashboard.html" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="url-scanner.html" class="nav-link"><i class="fa-solid fa-link"></i> URL Scanner</a></li>
+                <li><a href="message-scanner.html" class="nav-link"><i class="fa-solid fa-comment-sms"></i> Scam Messages</a></li>
+                <li><a href="qr-scanner.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> QR Scanner</a></li>
+                <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> Safety Tips</a></li>
+            </ul>
+
+            <div class="nav-system-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Shield Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <div class="page-category-tag">
+                    <i class="fa-solid fa-tower-broadcast"></i> Live Security Operations Center (SOC)
+                </div>
+                <h1 style="font-size: 2.4rem; margin: 0.35rem 0;">Real-Time Threat Telemetry</h1>
+                <p style="color: var(--text-secondary); max-width: 650px;">
+                    Aggregated intelligence directly queried from the database. Reflects genuine scans across all detection engines.
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <button class="cyber-btn cyber-btn-secondary" id="refreshDashboardBtn">
+                    <i class="fa-solid fa-arrows-rotate"></i> Refresh Telemetry
+                </button>
+                <a href="url-scanner.html" class="cyber-btn">
+                    <i class="fa-solid fa-plus"></i> New Scan
+                </a>
+            </div>
+        </div>
+
+        <!-- Shield Posture Card -->
+        <div class="shield-posture-card">
+            <div class="posture-text">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cyan); font-weight: 700; margin-bottom: 0.25rem;">
+                    <i class="fa-solid fa-shield-virus"></i> Overall Threat Posture Index
+                </div>
+                <h3>Active Shield Defense Status</h3>
+                <p style="color: var(--text-secondary); max-width: 580px; font-size: 0.92rem;">
+                    Real-time safety metric calculated based on analyzed malicious exploit attempts, phishing detection rates, and benign traffic patterns.
+                </p>
+            </div>
+            <div class="posture-score-box">
+                <div class="posture-circle">
+                    <span class="posture-number" id="postureScoreVal">--</span>
+                    <span class="posture-scale">/ 100</span>
+                </div>
+                <div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);" id="postureStatusLabel">Calibrating...</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);" id="dbEngineLabel">Database: Connecting</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="dashboard-stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon-wrapper blue">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Scans Executed</span>
+                    <span class="stat-value" id="statTotalScans">0</span>
+                    <span class="stat-trend" style="color: var(--cyan);">
+                        <i class="fa-solid fa-database"></i> Database Persisted
+                    </span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrapper red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">High-Risk Threats Blocked</span>
+                    <span class="stat-value" id="statHighRisk" style="color: var(--rose);">0</span>
+                    <span class="stat-trend" style="color: var(--rose);">
+                        <i class="fa-solid fa-shield-halved"></i> Actionable Alerts
+                    </span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrapper amber">
+                    <i class="fa-solid fa-radiation"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Suspicious / Medium Risk</span>
+                    <span class="stat-value" id="statMediumRisk" style="color: var(--amber);">0</span>
+                    <span class="stat-trend" style="color: var(--amber);">
+                        <i class="fa-solid fa-eye"></i> Under Surveillance
+                    </span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrapper emerald">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Low-Risk Safe Assets</span>
+                    <span class="stat-value" id="statLowRisk" style="color: var(--emerald);">0</span>
+                    <span class="stat-trend" style="color: var(--emerald);" id="statCleanRatio">
+                        <i class="fa-solid fa-arrow-trend-up"></i> Verified Clean
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Charts Grid -->
+        <div class="dashboard-charts-grid">
+            <!-- 7-Day Timeline Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fa-solid fa-chart-area" style="color: var(--cyan);"></i> Threat Activity Timeline (Last 7 Days)
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Real Daily Counts</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Severity Breakdown Doughnut -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fa-solid fa-chart-pie" style="color: var(--purple);"></i> Risk Severity Split
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Triage Ratio</span>
+                </div>
+                <div class="chart-body" style="display: flex; align-items: center; justify-content: center;">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vector Breakdown + Recent Scans -->
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Vector Distribution Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fa-solid fa-layer-group" style="color: var(--blue);"></i> Scan Vector Volume
+                    </div>
+                </div>
+                <div class="chart-body" style="display: flex; align-items: center; justify-content: center;">
+                    <canvas id="vectorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Telemetry Log Table -->
+            <div class="cyber-card" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-list-check" style="color: var(--cyan);"></i> Recent Telemetry Feed
+                    </div>
+                    <a href="history.html" style="font-size: 0.85rem; color: var(--cyan);">
+                        View Full History <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="cyber-table-wrapper" style="border: none;">
+                    <table class="cyber-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Target Asset</th>
+                                <th>Risk</th>
+                                <th>Score</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentScansTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                    <div class="spinner"></div> Loading telemetry feed...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scan Details Modal -->
+    <div class="cyber-modal-overlay" id="dashboardDetailsModal">
+        <div class="cyber-modal">
+            <button class="modal-close-btn" id="closeDashModalBtn">&times;</button>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                <span class="risk-badge" id="modalRiskBadge">RISK</span>
+                <h3 style="font-size: 1.3rem;" id="modalTitle">Scan Inspection Details</h3>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Target Asset</label>
+                <div style="font-family: var(--font-mono); font-size: 0.9rem; word-break: break-all; background: rgba(9, 14, 26, 0.8); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-top: 0.25rem;" id="modalTarget"></div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Summary Finding</label>
+                <div style="font-size: 0.95rem; color: var(--text-primary); margin-top: 0.25rem;" id="modalSummary"></div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Detection Flags</label>
+                <ul class="findings-list" id="modalFlagsList"></ul>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="cyber-btn cyber-btn-secondary" id="closeDashModalBtn2">Close Inspection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="margin-bottom: 1rem;">
+                    <div class="brand-icon-shield">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--cyan);"></i>
+                    </div>
+                    <span class="brand-title">DIGITAL SHIELD AI</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                    Security Operations Center. Live telemetry and real-time fraud mitigation.
+                </p>
+                <div class="footer-helpline-box">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">
+                        🚨 Indian National Cyber Crime Helpline
+                    </span>
+                    <span class="helpline-number">Dial 1930</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Scanners</h4>
+                <ul class="footer-links">
+                    <li><a href="url-scanner.html">URL Scanner</a></li>
+                    <li><a href="message-scanner.html">Scam Message Scanner</a></li>
+                    <li><a href="qr-scanner.html">QR Code Scanner</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>System Logs</h4>
+                <ul class="footer-links">
+                    <li><a href="history.html">Full Scan Records</a></li>
+                    <li><a href="about.html">Safety Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Database Status</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    Database persistence is actively synchronized. All scans logged with full audit details.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 Digital Shield AI. Security Operations Center.</div>
+            <div>Helpline: Dial 1930</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan History & Audit Logs - Digital Shield AI</title>
+    <meta name="description" content="Persistent scan records and threat telemetry retrieved directly from the MySQL database.">
+    <!-- Master Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome / Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo" id="histLogoLink">
+                <div class="brand-icon-shield">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--cyan); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <span class="brand-title">DIGITAL SHIELD</span>
+                    <span class="brand-badge">AI v2.4</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenuList">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="url-scanner.html" class="nav-link"><i class="fa-solid fa-link"></i> URL Scanner</a></li>
+                <li><a href="message-scanner.html" class="nav-link"><i class="fa-solid fa-comment-sms"></i> Scam Messages</a></li>
+                <li><a href="qr-scanner.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> QR Scanner</a></li>
+                <li><a href="history.html" class="nav-link active"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> Safety Tips</a></li>
+            </ul>
+
+            <div class="nav-system-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Shield Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <div class="page-category-tag">
+                    <i class="fa-solid fa-database"></i> Database Audit Logs
+                </div>
+                <h1 style="font-size: 2.4rem; margin: 0.35rem 0;">Scan History & Records</h1>
+                <p style="color: var(--text-secondary); max-width: 650px;">
+                    Persistent telemetry retrieved directly from the database. Inspect historical phishing detections, regional SMS scans, and QR audits.
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button class="cyber-btn cyber-btn-secondary" id="exportCsvBtn">
+                    <i class="fa-solid fa-file-csv"></i> Export CSV
+                </button>
+                <button class="cyber-btn cyber-btn-secondary" id="exportJsonBtn">
+                    <i class="fa-solid fa-file-code"></i> Export JSON
+                </button>
+                <button class="cyber-btn cyber-btn-danger" id="clearHistoryBtn" style="font-size: 0.85rem; padding: 0.75rem 1.25rem;">
+                    <i class="fa-solid fa-trash-can"></i> Clear History
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter & Search Controls Bar -->
+        <div class="cyber-card" style="padding: 1.25rem; margin-bottom: 1.75rem;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: center;">
+                <!-- Search Input -->
+                <div>
+                    <input type="text" id="searchInput" class="cyber-input" placeholder="Search target URL, message snippet, or summary..." autocomplete="off">
+                </div>
+
+                <!-- Type Filter -->
+                <div>
+                    <select id="typeFilter" class="cyber-select">
+                        <option value="ALL">All Scan Vectors (All)</option>
+                        <option value="URL">URLs (Websites)</option>
+                        <option value="MESSAGE">Scam Messages</option>
+                        <option value="QR">QR Codes & UPI</option>
+                    </select>
+                </div>
+
+                <!-- Risk Filter -->
+                <div>
+                    <select id="riskFilter" class="cyber-select">
+                        <option value="ALL">All Risk Levels (All)</option>
+                        <option value="HIGH">High Risk Threats</option>
+                        <option value="MEDIUM">Medium Risk Suspicious</option>
+                        <option value="LOW">Low Risk Clean</option>
+                    </select>
+                </div>
+
+                <!-- Reset / Filter Button -->
+                <div>
+                    <button class="cyber-btn" id="applyFilterBtn" style="padding: 0.85rem 1.25rem;">
+                        <i class="fa-solid fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Records Table -->
+        <div class="cyber-table-wrapper">
+            <table class="cyber-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th style="width: 110px;">Vector</th>
+                        <th>Target Input Asset</th>
+                        <th style="width: 130px;">Risk Level</th>
+                        <th style="width: 90px;">Score</th>
+                        <th style="width: 180px;">Logged Date & Time</th>
+                        <th style="width: 160px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            <div class="spinner"></div> Retrieving database records...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <span style="font-size: 0.88rem; color: var(--text-muted);" id="paginationStats">
+                Showing records
+            </span>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="cyber-btn cyber-btn-secondary" id="prevPageBtn" disabled>
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button class="cyber-btn cyber-btn-secondary" id="nextPageBtn" disabled>
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scan Inspection Modal -->
+    <div class="cyber-modal-overlay" id="historyDetailsModal">
+        <div class="cyber-modal">
+            <button class="modal-close-btn" id="closeHistModalBtn">&times;</button>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+                <span class="risk-badge" id="modalRiskBadge">RISK</span>
+                <h3 style="font-size: 1.3rem;">Audit Record Inspection</h3>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Record ID</label>
+                    <div style="font-size: 0.95rem; font-family: var(--font-mono); color: var(--cyan);" id="modalId"></div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Vector / Engine</label>
+                    <div style="font-size: 0.95rem; color: var(--text-primary);" id="modalVector"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Target Asset</label>
+                <div style="font-family: var(--font-mono); font-size: 0.88rem; word-break: break-all; background: rgba(9, 14, 26, 0.9); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-top: 0.25rem;" id="modalTarget"></div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Summary Finding</label>
+                <div style="font-size: 0.95rem; color: var(--text-primary); margin-top: 0.25rem;" id="modalSummary"></div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Identified Threat Signals</label>
+                <ul class="findings-list" id="modalFlagsList"></ul>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                <button class="cyber-btn cyber-btn-secondary" id="closeHistModalBtn2">Close Audit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="margin-bottom: 1rem;">
+                    <div class="brand-icon-shield">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--cyan);"></i>
+                    </div>
+                    <span class="brand-title">DIGITAL SHIELD AI</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                    Audit history and telemetry record retention engine.
+                </p>
+                <div class="footer-helpline-box">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">
+                        🚨 Indian National Cyber Crime Helpline
+                    </span>
+                    <span class="helpline-number">Dial 1930</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Scanners</h4>
+                <ul class="footer-links">
+                    <li><a href="url-scanner.html">URL Scanner</a></li>
+                    <li><a href="message-scanner.html">Scam Message Scanner</a></li>
+                    <li><a href="qr-scanner.html">QR Code Scanner</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Platform Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="dashboard.html">Threat Dashboard</a></li>
+                    <li><a href="about.html">Safety Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Data Protection</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    All scan telemetry is stored safely in MySQL for forensic review, false positive auditing, and cyber threat intelligence.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 Digital Shield AI. Database Audit History.</div>
+            <div>Dial 1930 for Cyber Crime Assistance</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>

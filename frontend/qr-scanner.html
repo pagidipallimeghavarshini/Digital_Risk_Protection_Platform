@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code & Quishing Scanner - Digital Shield AI</title>
+    <meta name="description" content="Decode and analyze QR codes for Quishing phishing links, UPI payment fraud, and malicious redirects.">
+    <!-- Master Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome / Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsQR Library for Client-Side Real-Time Browser QR Decoding -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo" id="qrLogoLink">
+                <div class="brand-icon-shield">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--cyan); font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <span class="brand-title">DIGITAL SHIELD</span>
+                    <span class="brand-badge">AI v2.4</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="navMenuList">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="url-scanner.html" class="nav-link"><i class="fa-solid fa-link"></i> URL Scanner</a></li>
+                <li><a href="message-scanner.html" class="nav-link"><i class="fa-solid fa-comment-sms"></i> Scam Messages</a></li>
+                <li><a href="qr-scanner.html" class="nav-link active"><i class="fa-solid fa-qrcode"></i> QR Scanner</a></li>
+                <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> Safety Tips</a></li>
+            </ul>
+
+            <div class="nav-system-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Shield Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-category-tag">
+                <i class="fa-solid fa-qrcode"></i> Physical-to-Digital Quishing Vector
+            </div>
+            <h1 class="page-title">QR Code & UPI Exploit Scanner</h1>
+            <p class="page-subtitle">
+                Inspect QR matrices for concealed phishing links (Quishing), spoofed utility UPI payment traps, and rogue wireless network profiles.
+            </p>
+        </div>
+
+        <!-- Scanner Card -->
+        <div class="cyber-card" style="max-width: 860px; margin: 0 auto;">
+            <!-- Hackathon Sample Test Chips -->
+            <div style="margin-bottom: 1.25rem;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
+                    🎯 Hackathon Quick Demo Payloads (Click to inspect):
+                </span>
+                <div class="sample-presets-bar">
+                    <button class="preset-chip" data-qr="upi://pay?pa=fake.electricity.board@ybl&pn=APCPDCL_BILL_PAY&am=0&cu=INR">
+                        ⚡ Fraud UPI: Spoofed Electricity Collector
+                    </button>
+                    <button class="preset-chip" data-qr="https://secure-login-hdfc-kyc.update-account.biz/verify.php">
+                        ⚠️ Quishing: Concealed Bank Phishing URL
+                    </button>
+                    <button class="preset-chip" data-qr="http://free-iphone16-giveaway.claim-now.xyz/spin">
+                        ⚠️ Quishing: Fake Reward Lure
+                    </button>
+                    <button class="preset-chip" data-qr="upi://pay?pa=verified.store@hdfcbank&pn=FreshMart&am=250&cu=INR">
+                        ✅ Valid UPI: Clean Merchant Transaction
+                    </button>
+                    <button class="preset-chip" data-qr="https://cybercrime.gov.in">
+                        ✅ Valid Link: National Cybercrime Portal
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Tabs: File Upload vs Camera -->
+            <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 1.5rem;">
+                <button class="cyber-btn cyber-btn-outline" id="tabUploadBtn" style="border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 0.6rem 1.25rem;">
+                    <i class="fa-solid fa-file-arrow-up"></i> Upload QR Image
+                </button>
+                <button class="cyber-btn cyber-btn-secondary" id="tabCameraBtn" style="border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 0.6rem 1.25rem;">
+                    <i class="fa-solid fa-camera"></i> Live Webcam Scanner
+                </button>
+                <button class="cyber-btn cyber-btn-secondary" id="tabManualBtn" style="border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 0.6rem 1.25rem;">
+                    <i class="fa-solid fa-keyboard"></i> Raw Payload Text
+                </button>
+            </div>
+
+            <!-- Section 1: File Upload Box -->
+            <div id="sectionUpload">
+                <div id="dropZone" style="border: 2px dashed rgba(56, 189, 248, 0.35); border-radius: var(--radius-lg); padding: 3rem 1.5rem; text-align: center; background: rgba(9, 14, 26, 0.6); cursor: pointer; transition: var(--transition);">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--cyan); margin-bottom: 1rem;"></i>
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem;">Drag & Drop QR Image Here</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Supports PNG, JPG, JPEG, and WebP files</p>
+                    <label for="qrFileInput" class="cyber-btn cyber-btn-secondary" style="cursor: pointer; display: inline-flex;">
+                        <i class="fa-solid fa-folder-open"></i> Browse File
+                    </label>
+                    <input type="file" id="qrFileInput" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Section 2: Live Camera View -->
+            <div id="sectionCamera" style="display: none; text-align: center;">
+                <div style="position: relative; max-width: 480px; margin: 0 auto; border-radius: var(--radius-md); overflow: hidden; border: 2px solid var(--cyan); background: #000; box-shadow: 0 0 25px var(--cyan-glow);">
+                    <video id="cameraVideo" style="width: 100%; height: 320px; object-fit: cover;" playsinline></video>
+                    <canvas id="qrCanvas" style="display: none;"></canvas>
+                    
+                    <!-- Scanner crosshair animation -->
+                    <div style="position: absolute; top: 15%; left: 15%; right: 15%; bottom: 15%; border: 2px dashed rgba(0, 242, 254, 0.7); border-radius: 12px; pointer-events: none;">
+                        <div style="width: 100%; height: 2px; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation: scanLine 2s infinite ease-in-out;"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.75rem;">
+                    <button class="cyber-btn" id="startCamBtn"><i class="fa-solid fa-video"></i> Start Camera</button>
+                    <button class="cyber-btn cyber-btn-secondary" id="stopCamBtn"><i class="fa-solid fa-video-slash"></i> Stop Camera</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Raw Payload / Direct Input -->
+            <div id="sectionManual" style="display: none;">
+                <form id="manualQrForm">
+                    <div class="form-group">
+                        <label for="manualPayloadInput" class="form-label">
+                            <span>Decoded QR Code Content / URI String</span>
+                            <span class="form-helper">Paste extracted URL or upi://pay URI</span>
+                        </label>
+                        <input type="text" id="manualPayloadInput" class="cyber-input" placeholder="e.g. upi://pay?pa=fake.board@ybl&pn=BILL_PAY&am=0" required>
+                    </div>
+                    <button type="submit" class="cyber-btn" id="manualSubmitBtn">
+                        <i class="fa-solid fa-satellite-dish"></i> Inspect Payload
+                    </button>
+                </form>
+            </div>
+
+            <div id="qrValidationAlert" style="display: none; padding: 0.75rem 1rem; background: var(--rose-bg); border: 1px solid var(--rose); border-radius: var(--radius-sm); color: var(--rose); font-size: 0.88rem; margin-top: 1.25rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="qrValidationMsg"></span>
+            </div>
+        </div>
+
+        <!-- Dynamic Result Card -->
+        <div id="qrResultContainer" style="display: none; max-width: 860px; margin: 2rem auto 0;">
+            <!-- Injected via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Scan Line Keyframes -->
+    <style>
+        @keyframes scanLine {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(210px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="margin-bottom: 1rem;">
+                    <div class="brand-icon-shield">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--cyan);"></i>
+                    </div>
+                    <span class="brand-title">DIGITAL SHIELD AI</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                    QR Exploit & Quishing Defense System protecting mobile users from deceptive redirects and UPI payment traps.
+                </p>
+                <div class="footer-helpline-box">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">
+                        🚨 Indian National Cyber Crime Helpline
+                    </span>
+                    <span class="helpline-number">Dial 1930</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Related Scanners</h4>
+                <ul class="footer-links">
+                    <li><a href="url-scanner.html">URL Scanner</a></li>
+                    <li><a href="message-scanner.html">Scam Message Scanner</a></li>
+                    <li><a href="dashboard.html">Threat Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="history.html">Scan History</a></li>
+                    <li><a href="about.html">Safety Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>UPI Safety Principle</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    You NEVER need to scan a QR code or enter your UPI PIN to receive money. Scanning a QR code only authorizes payments OUT of your account.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 Digital Shield AI. QR Code Threat & UPI Defense.</div>
+            <div>Dial 1930 for Cyber Crime Assistance</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/qr-scanner.js"></script>
+</body>
+</html>
