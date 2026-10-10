@@ -124,6 +124,35 @@ def run_tests():
     print(" [PASS] Database persistence and retrieval verified.")
     passed += 1
 
+    # Test 8: WSGI & Root Application Entry Point for Render
+    total += 1
+    print("\n[TEST 8] Testing WSGI and Root app Entry Points for Render...")
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if root_dir not in sys.path:
+        sys.path.insert(0, root_dir)
+
+    import wsgi
+    assert hasattr(wsgi, "app"), "wsgi module must expose 'app' for Gunicorn (gunicorn wsgi:app)"
+    assert wsgi.app.name in ("backend.app", "app", "__main__"), "Unexpected WSGI app name"
+
+    import app as root_app_module
+    assert hasattr(root_app_module, "app"), "root app module must expose 'app' for 'python app.py' / 'gunicorn app:app'"
+
+    # Test Flask HTTP routes with Flask test client
+    with wsgi.app.test_client() as client:
+        health_res = client.get("/api/health")
+        assert health_res.status_code == 200, f"Health check returned status {health_res.status_code}"
+        health_json = health_res.get_json()
+        assert health_json.get("status") == "ONLINE", "Expected status ONLINE in health check"
+        print(f" -> /api/health returned 200 OK: {health_json['status']} ({health_json['service']})")
+
+        home_res = client.get("/")
+        assert home_res.status_code == 200, f"Home page returned status {home_res.status_code}"
+        print(" -> Static Home route '/' returned 200 OK")
+
+    print(" [PASS] WSGI entry point and Flask test client verified.")
+    passed += 1
+
     print("\n" + "=" * 65)
     print(f" ALL {passed}/{total} VERIFICATION TESTS PASSED SUCCESSFULLY!")
     print("=" * 65)
@@ -131,3 +160,4 @@ def run_tests():
 
 if __name__ == "__main__":
     run_tests()
+
