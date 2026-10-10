@@ -10,13 +10,34 @@ import sqlite3
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 
+from urllib.parse import urlparse
+
 # Database Configuration with Environment Variable Support
-DB_TYPE = os.getenv("DB_TYPE", "mysql")  # 'mysql' or 'sqlite'
+DB_TYPE = os.getenv("DB_TYPE", "auto")  # 'mysql', 'sqlite', or 'auto'
+DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
+
 MYSQL_HOST = os.getenv("MYSQL_HOST", "127.0.0.1")
 MYSQL_PORT = int(os.getenv("MYSQL_PORT", 3306))
 MYSQL_USER = os.getenv("MYSQL_USER", "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "digital_shield_ai")
+
+# Parse DATABASE_URL / MYSQL_URL if provided by cloud hosting (e.g. Render, Aiven, PlanetScale)
+if DATABASE_URL:
+    try:
+        parsed = urlparse(DATABASE_URL)
+        if parsed.hostname:
+            MYSQL_HOST = parsed.hostname
+        if parsed.port:
+            MYSQL_PORT = parsed.port
+        if parsed.username:
+            MYSQL_USER = parsed.username
+        if parsed.password:
+            MYSQL_PASSWORD = parsed.password
+        if parsed.path and len(parsed.path) > 1:
+            MYSQL_DATABASE = parsed.path.lstrip("/")
+    except Exception as e:
+        print(f"[Database] Notice parsing DATABASE_URL: {e}")
 
 SQLITE_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "digital_shield.db")
 
@@ -34,7 +55,8 @@ def _get_mysql_connection():
             user=MYSQL_USER,
             password=MYSQL_PASSWORD,
             database=MYSQL_DATABASE,
-            charset="utf8mb4"
+            charset="utf8mb4",
+            connection_timeout=3
         )
     except Exception:
         try:
@@ -46,6 +68,7 @@ def _get_mysql_connection():
                 password=MYSQL_PASSWORD,
                 database=MYSQL_DATABASE,
                 charset="utf8mb4",
+                connect_timeout=3,
                 cursorclass=pymysql.cursors.DictCursor
             )
         except Exception as e:
@@ -67,9 +90,10 @@ def init_database() -> str:
     """
     global ACTIVE_ENGINE
     
-    # Try MySQL
-    try:
-        conn = _get_mysql_connection()
+    # Try MySQL if not explicitly configured to SQLite
+    if DB_TYPE.lower() != "sqlite":
+        try:
+            conn = _get_mysql_connection()
         cursor = conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS scan_records (

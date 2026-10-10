@@ -1,6 +1,13 @@
-flask>=2.2.0
-flask-cors>=3.0.10
-mysql-connector-python>=8.0.30
-pymysql>=1.0.2
-pillow>=9.5.0
-requests>=2.28.0
+# Core Production Dependencies for Digital Shield AI on Render
+Flask>=2.3.0,<3.1.0
+flask-cors>=4.0.0
+gunicorn>=21.2.0
+
+# Database Connectors (MySQL with resilient fallback)
+pymysql>=1.1.0
+mysql-connector-python>=8.0.33
+cryptography>=41.0.0
+
+# Image & Utility Processing
+Pillow>=10.0.0
+requests>=2.31.0

@@ -87,6 +87,27 @@ Visit: **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
 
 ---
 
+### Option C: Deploying to Render Cloud (Web Service)
+
+1. Push your repository to GitHub: `git push origin main`.
+2. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New +** -> **Web Service**.
+3. Connect your repository: `DigitalRiskProtection_Platform`.
+4. Configure the Web Service settings:
+   - **Name**: `digital-risk-protection-platform`
+   - **Language / Runtime**: `Python 3`
+   - **Branch**: `main`
+   - **Region**: Any (e.g. `Singapore` or `Frankfurt` or `Oregon`)
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn wsgi:app --bind 0.0.0.0:$PORT`
+5. Environment Variables (under **Advanced**):
+   - `PYTHON_VERSION`: `3.11.9`
+   - `FLASK_ENV`: `production`
+   - *(Optional for MySQL)*: `DATABASE_URL` or `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`
+   *(If no MySQL database is configured, the application automatically uses its built-in SQLite engine with zero downtime!)*
+6. Click **Create Web Service**. Render will build and deploy your site in ~1 minute!
+
+---
+
 ## 🗂️ Project Structure
 
 ```

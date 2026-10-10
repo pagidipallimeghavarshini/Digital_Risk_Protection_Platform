@@ -3,19 +3,17 @@
  */
 
 const CONFIG = {
-    // Automatically detect whether frontend is served from Flask or standalone browser
+    // Automatically detect whether frontend is served from Flask/Render or standalone browser
     getApiBase() {
+        // When served from any web server (Render, localhost, custom domain)
         if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-            // If served directly from Flask on port 5000 (or another port)
-            if (window.location.port === '5000') {
-                return '/api';
-            }
+            return '/api';
         }
-        // Default backend address for standalone opening or other live servers
+        // Fallback for opening raw HTML files locally via file:// protocol
         return 'http://127.0.0.1:5000/api';
     },
 
-    TIMEOUT_MS: 15000
+    TIMEOUT_MS: 20000
 };
 
 /**
