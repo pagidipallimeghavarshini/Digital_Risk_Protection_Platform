@@ -9,13 +9,21 @@ import os
 import sys
 from flask import Flask, request, jsonify, send_from_directory, make_response
 
-# Ensure backend root is in Python module path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Ensure backend directory is in Python module path
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
 
-from database import init_database, save_scan, get_history, get_stats, delete_record, clear_all_records
-from ml_engine.url_detector import analyze_url
-from ml_engine.message_detector import analyze_message
-from ml_engine.qr_detector import analyze_qr_payload, decode_qr_image
+try:
+    from backend.database import init_database, save_scan, get_history, get_stats, delete_record, clear_all_records
+    from backend.ml_engine.url_detector import analyze_url
+    from backend.ml_engine.message_detector import analyze_message
+    from backend.ml_engine.qr_detector import analyze_qr_payload, decode_qr_image
+except ImportError:
+    from database import init_database, save_scan, get_history, get_stats, delete_record, clear_all_records
+    from ml_engine.url_detector import analyze_url
+    from ml_engine.message_detector import analyze_message
+    from ml_engine.qr_detector import analyze_qr_payload, decode_qr_image
 
 # Path to frontend directory
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))

@@ -94,80 +94,80 @@ def init_database() -> str:
     if DB_TYPE.lower() != "sqlite":
         try:
             conn = _get_mysql_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS scan_records (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                scan_type VARCHAR(20) NOT NULL,
-                target_input TEXT NOT NULL,
-                risk_level VARCHAR(10) NOT NULL,
-                risk_score INT NOT NULL,
-                detection_method VARCHAR(100) NOT NULL,
-                summary VARCHAR(255) NOT NULL,
-                details_json LONGTEXT,
-                language VARCHAR(20) DEFAULT 'en',
-                status VARCHAR(20) DEFAULT 'COMPLETED',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_scan_type (scan_type),
-                INDEX idx_risk_level (risk_level),
-                INDEX idx_created_at (created_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        """)
-        conn.commit()
-        cursor.close()
-        conn.close()
-        ACTIVE_ENGINE = "MySQL"
-        print("[Database] Successfully connected to MySQL database: " + MYSQL_DATABASE)
-        return ACTIVE_ENGINE
-    except Exception as mysql_err:
-        print(f"[Database] MySQL connection notice: {mysql_err}")
-        print("[Database] Engaging resilient SQLite fallback engine so application runs smoothly.")
-        
-        # Initialize SQLite fallback
-        conn = _get_sqlite_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS scan_records (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                scan_type TEXT NOT NULL,
-                target_input TEXT NOT NULL,
-                risk_level TEXT NOT NULL,
-                risk_score INTEGER NOT NULL,
-                detection_method TEXT NOT NULL,
-                summary TEXT NOT NULL,
-                details_json TEXT,
-                language TEXT DEFAULT 'en',
-                status TEXT DEFAULT 'COMPLETED',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        conn.commit()
-
-        # Seed initial data in SQLite if table is brand new
-        cursor.execute("SELECT COUNT(*) FROM scan_records")
-        count = cursor.fetchone()[0]
-        if count == 0:
-            seed_records = [
-                ('URL', 'https://secure-login-hdfc-kyc.update-account.biz/verify.php', 'HIGH', 94, 'ML Baseline + Lexical Analysis', 'Phishing domain impersonating HDFC Bank with deceptive subdomain', '{"domain":"update-account.biz","reputation":"Malicious","flags":["Bank Impersonation (HDFC)","High Entropy URL","Deceptive Subdomain","Suspicious TLD (.biz)"]}', 'en', 'COMPLETED'),
-                ('MESSAGE', 'మీ కరెంట్ బిల్లు చెల్లించనందున ఈరోజు రాత్రి విద్యుత్ సరఫరా నిలిపివేయబడుతుంది. వెంటనే ఈ నంబర్‌కు కాల్ చేయండి: 9848022338', 'HIGH', 89, 'NLP Baseline + Regional Scam Heuristics', 'Electricity disconnection fraud targeting Telugu regional users', '{"detected_keywords":["కరెంట్ బిల్లు","విద్యుత్ సరఫరా నిలిపివేయబడుతుంది"],"urgency_level":"High","scam_type":"Utility Disconnection Scam"}', 'te', 'COMPLETED'),
-                ('QR', 'upi://pay?pa=fake.electricity.board@ybl&pn=APCPDCL_BILL_PAY&am=0&cu=INR', 'HIGH', 86, 'QR Payload Parser + UPI Fraud Heuristics', 'Spoofed APCPDCL electricity bill collector using personal VPA handle', '{"upi_id":"fake.electricity.board@ybl","flags":["Non-verified PSP handle","Spoofed utility board name","Zero amount pull request"]}', 'en', 'COMPLETED'),
-                ('URL', 'https://github.com/torvalds/linux', 'LOW', 4, 'ML Baseline + Lexical Analysis', 'Legitimate open-source code repository with clean reputation', '{"domain":"github.com","reputation":"Clean","flags":["Verified Domain Authority","Standard HTTPS Certificate"]}', 'en', 'COMPLETED'),
-                ('MESSAGE', 'URGENT: Your SBI YONO account has been suspended due to pending PAN KYC. Submit documents now at https://sbi-kyc-reactivate.info', 'HIGH', 96, 'NLP Baseline + Phishing Pattern Matcher', 'State Bank of India credential harvesting and urgent KYC scam', '{"detected_keywords":["URGENT","suspended","KYC","SBI YONO"],"urgency_level":"Critical","target_brand":"State Bank of India"}', 'en', 'COMPLETED'),
-                ('MESSAGE', 'Hi Priya, the client meeting has been moved to Thursday 3:00 PM. Please review the updated deck on Google Drive.', 'LOW', 8, 'NLP Baseline + Natural Language Analysis', 'Benign conversational scheduling message', '{"detected_keywords":[],"urgency_level":"Low","scam_type":"None"}', 'en', 'COMPLETED'),
-                ('QR', 'https://en.wikipedia.org/wiki/Computer_security', 'LOW', 5, 'QR Payload Parser + URL Analysis', 'Legitimate informational link to Wikipedia encyclopedia', '{"domain":"wikipedia.org","reputation":"Safe","flags":["Known Authority Domain","Valid TLS 1.3"]}', 'en', 'COMPLETED'),
-                ('URL', 'http://free-iphone16-giveaway.claim-now.xyz/spin', 'HIGH', 91, 'ML Baseline + Lexical Analysis', 'Social engineering giveaway lure on untrusted TLD without SSL', '{"domain":"claim-now.xyz","reputation":"Malicious","flags":["Missing HTTPS Encryption","High-risk TLD (.xyz)"]}', 'en', 'COMPLETED'),
-                ('MESSAGE', 'అభినందనలు! మీకు లక్కీ డ్రాలో రూ. 25,00,000 నగదు లభించింది. మీ ప్రైజ్ మనీ క్లెయిమ్ చేయడానికి ఈ లింక్‌ను ఓపెన్ చేయండి.', 'HIGH', 93, 'NLP Baseline + Regional Scam Heuristics', 'Telugu lottery and prize reward fraud message', '{"detected_keywords":["అభినందనలు","లక్కీ డ్రా","నగదు","క్లెయిమ్"],"urgency_level":"High","scam_type":"Lottery / Fake Prize Fraud"}', 'te', 'COMPLETED'),
-                ('URL', 'https://docs.python.org/3/library/index.html', 'LOW', 2, 'ML Baseline + Lexical Analysis', 'Official Python documentation website', '{"domain":"python.org","reputation":"Safe","flags":["Official Foundation Domain","Valid SSL"]}', 'en', 'COMPLETED')
-            ]
-            cursor.executemany("""
-                INSERT INTO scan_records (scan_type, target_input, risk_level, risk_score, detection_method, summary, details_json, language, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, seed_records)
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS scan_records (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    scan_type VARCHAR(20) NOT NULL,
+                    target_input TEXT NOT NULL,
+                    risk_level VARCHAR(10) NOT NULL,
+                    risk_score INT NOT NULL,
+                    detection_method VARCHAR(100) NOT NULL,
+                    summary VARCHAR(255) NOT NULL,
+                    details_json LONGTEXT,
+                    language VARCHAR(20) DEFAULT 'en',
+                    status VARCHAR(20) DEFAULT 'COMPLETED',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_scan_type (scan_type),
+                    INDEX idx_risk_level (risk_level),
+                    INDEX idx_created_at (created_at)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """)
             conn.commit()
+            cursor.close()
+            conn.close()
+            ACTIVE_ENGINE = "MySQL"
+            print("[Database] Successfully connected to MySQL database: " + MYSQL_DATABASE)
+            return ACTIVE_ENGINE
+        except Exception as mysql_err:
+            print(f"[Database] MySQL connection notice: {mysql_err}")
+            print("[Database] Engaging resilient SQLite fallback engine so application runs smoothly.")
+        
+    # Initialize SQLite fallback
+    conn = _get_sqlite_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scan_records (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            scan_type TEXT NOT NULL,
+            target_input TEXT NOT NULL,
+            risk_level TEXT NOT NULL,
+            risk_score INTEGER NOT NULL,
+            detection_method TEXT NOT NULL,
+            summary TEXT NOT NULL,
+            details_json TEXT,
+            language TEXT DEFAULT 'en',
+            status TEXT DEFAULT 'COMPLETED',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+    conn.commit()
 
-        conn.close()
-        ACTIVE_ENGINE = "SQLite (Fallback Resilience Active)"
-        return ACTIVE_ENGINE
+    # Seed initial data in SQLite if table is brand new
+    cursor.execute("SELECT COUNT(*) FROM scan_records")
+    count = cursor.fetchone()[0]
+    if count == 0:
+        seed_records = [
+            ('URL', 'https://secure-login-hdfc-kyc.update-account.biz/verify.php', 'HIGH', 94, 'ML Baseline + Lexical Analysis', 'Phishing domain impersonating HDFC Bank with deceptive subdomain', '{"domain":"update-account.biz","reputation":"Malicious","flags":["Bank Impersonation (HDFC)","High Entropy URL","Deceptive Subdomain","Suspicious TLD (.biz)"]}', 'en', 'COMPLETED'),
+            ('MESSAGE', 'మీ కరెంట్ బిల్లు చెల్లించనందున ఈరోజు రాత్రి విద్యుత్ సరఫరా నిలిపివేయబడుతుంది. వెంటనే ఈ నంబర్‌కు కాల్ చేయండి: 9848022338', 'HIGH', 89, 'NLP Baseline + Regional Scam Heuristics', 'Electricity disconnection fraud targeting Telugu regional users', '{"detected_keywords":["కరెంట్ బిల్లు","విద్యుత్ సరఫరా నిలిపివేయబడుతుంది"],"urgency_level":"High","scam_type":"Utility Disconnection Scam"}', 'te', 'COMPLETED'),
+            ('QR', 'upi://pay?pa=fake.electricity.board@ybl&pn=APCPDCL_BILL_PAY&am=0&cu=INR', 'HIGH', 86, 'QR Payload Parser + UPI Fraud Heuristics', 'Spoofed APCPDCL electricity bill collector using personal VPA handle', '{"upi_id":"fake.electricity.board@ybl","flags":["Non-verified PSP handle","Spoofed utility board name","Zero amount pull request"]}', 'en', 'COMPLETED'),
+            ('URL', 'https://github.com/torvalds/linux', 'LOW', 4, 'ML Baseline + Lexical Analysis', 'Legitimate open-source code repository with clean reputation', '{"domain":"github.com","reputation":"Clean","flags":["Verified Domain Authority","Standard HTTPS Certificate"]}', 'en', 'COMPLETED'),
+            ('MESSAGE', 'URGENT: Your SBI YONO account has been suspended due to pending PAN KYC. Submit documents now at https://sbi-kyc-reactivate.info', 'HIGH', 96, 'NLP Baseline + Phishing Pattern Matcher', 'State Bank of India credential harvesting and urgent KYC scam', '{"detected_keywords":["URGENT","suspended","KYC","SBI YONO"],"urgency_level":"Critical","target_brand":"State Bank of India"}', 'en', 'COMPLETED'),
+            ('MESSAGE', 'Hi Priya, the client meeting has been moved to Thursday 3:00 PM. Please review the updated deck on Google Drive.', 'LOW', 8, 'NLP Baseline + Natural Language Analysis', 'Benign conversational scheduling message', '{"detected_keywords":[],"urgency_level":"Low","scam_type":"None"}', 'en', 'COMPLETED'),
+            ('QR', 'https://en.wikipedia.org/wiki/Computer_security', 'LOW', 5, 'QR Payload Parser + URL Analysis', 'Legitimate informational link to Wikipedia encyclopedia', '{"domain":"wikipedia.org","reputation":"Safe","flags":["Known Authority Domain","Valid TLS 1.3"]}', 'en', 'COMPLETED'),
+            ('URL', 'http://free-iphone16-giveaway.claim-now.xyz/spin', 'HIGH', 91, 'ML Baseline + Lexical Analysis', 'Social engineering giveaway lure on untrusted TLD without SSL', '{"domain":"claim-now.xyz","reputation":"Malicious","flags":["Missing HTTPS Encryption","High-risk TLD (.xyz)"]}', 'en', 'COMPLETED'),
+            ('MESSAGE', 'అభినందనలు! మీకు లక్కీ డ్రాలో రూ. 25,00,000 నగదు లభించింది. మీ ప్రైజ్ మనీ క్లెయిమ్ చేయడానికి ఈ లింక్‌ను ఓపెన్ చేయండి.', 'HIGH', 93, 'NLP Baseline + Regional Scam Heuristics', 'Telugu lottery and prize reward fraud message', '{"detected_keywords":["అభినందనలు","లక్కీ డ్రా","నగదు","క్లెయిమ్"],"urgency_level":"High","scam_type":"Lottery / Fake Prize Fraud"}', 'te', 'COMPLETED'),
+            ('URL', 'https://docs.python.org/3/library/index.html', 'LOW', 2, 'ML Baseline + Lexical Analysis', 'Official Python documentation website', '{"domain":"python.org","reputation":"Safe","flags":["Official Foundation Domain","Valid SSL"]}', 'en', 'COMPLETED')
+        ]
+        cursor.executemany("""
+            INSERT INTO scan_records (scan_type, target_input, risk_level, risk_score, detection_method, summary, details_json, language, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, seed_records)
+        conn.commit()
+
+    conn.close()
+    ACTIVE_ENGINE = "SQLite (Fallback Resilience Active)"
+    return ACTIVE_ENGINE
 
 
 def save_scan(
